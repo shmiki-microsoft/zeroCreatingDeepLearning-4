@@ -26,3 +26,34 @@ class Agent:
             return np.random.randint(0, len(self.Qs))
         else:
             return np.argmax(self.Qs)
+
+if __name__ == '__main__':
+    steps = 1000
+    epsilon = 0.1
+
+    bandit = Bandit()
+    agent = Agent(epsilon)
+    total_reward = 0
+    total_rewards = []
+    rates = []
+
+    for step in range(steps):
+        action = agent.get_action()
+        reward = bandit.play(action)
+        agent.update(action, reward)
+        total_reward += reward
+
+        total_rewards.append(total_reward)
+        rates.append(total_reward / (step + 1))
+
+    print(total_reward)
+
+    plt.ylabel('Total reward')
+    plt.xlabel('Steps')
+    plt.plot(total_rewards)
+    plt.show()
+
+    plt.ylabel('Rates')
+    plt.xlabel('Steps')
+    plt.plot(rates)
+    plt.show()
