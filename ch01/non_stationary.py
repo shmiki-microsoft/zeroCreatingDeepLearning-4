@@ -34,14 +34,14 @@ runs = 200
 steps = 1000
 epsilon = 0.1
 alpha = 0.8
-agent_types = ['sample avarage','alpha const update']
+agent_types = ['sample average','alpha const update']
 results = {}
 
 for agent_type in agent_types:
     all_rates = np.zeros((runs, steps)) # (200,1000)
 
     for run in range(runs):
-        if agent_type == 'sample avarage':
+        if agent_type == 'sample average':
             agent = Agent(epsilon)
         else:
             agent = AlphaAgent(epsilon, alpha)
