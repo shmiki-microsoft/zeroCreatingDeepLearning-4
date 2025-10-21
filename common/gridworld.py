@@ -1,4 +1,5 @@
 import numpy as np
+import common.gridworld_render as render_helper
 
 class GridWorld:
     def __init__(self):
@@ -23,18 +24,18 @@ class GridWorld:
     @property
     def height(self):
         return len(self.reward_map)
-    
+
     @property
     def width(self):
         return len(self.reward_map[0])
-    
+
     @property
     def shape(self):
         return self.reward_map.shape
-    
+
     def actions(self):
         return self.action_space
-    
+
     def states(self):
         for h in range(self.height):
             for w in range(self.width):
@@ -56,6 +57,29 @@ class GridWorld:
     def reward(self, state, action, next_state):
         return self.reward_map[next_state]
 
+    def reset(self):
+        self.agent_state = self.start_state
+        return self.agent_state
+
+    def step(self, action):
+        state = self.agent_state
+        next_state = self.next_state(state, action)
+        reward = self.reward(state, action, next_state)
+        done =  (next_state == self.goal_state)
+
+        self.agent_state = next_state
+        return next_state, reward, done
+
+    def render_v(self, v=None, policy=None, print_value=True):
+        renderer = render_helper.Renderer(self.reward_map, self.goal_state,
+                                          self.wall_state)
+        renderer.render_v(v, policy, print_value)
+
+    def render_q(self, q=None, print_value=True):
+        renderer = render_helper.Renderer(self.reward_map, self.goal_state,
+                                          self.wall_state)
+        renderer.render_q(q, print_value)
+
 if __name__ == "__main__":
     env = GridWorld()
     print(env.height)
@@ -67,3 +91,7 @@ if __name__ == "__main__":
     print("-"*50)
     for a in env.actions():
         print(a)
+    V = {}
+    for state in env.states():
+        V[state] = np.random.randn()
+    env.render_v(V)
