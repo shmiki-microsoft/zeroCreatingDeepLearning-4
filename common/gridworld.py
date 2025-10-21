@@ -1,3 +1,4 @@
+from collections import defaultdict
 import numpy as np
 import common.gridworld_render as render_helper
 
@@ -91,7 +92,12 @@ if __name__ == "__main__":
     print("-"*50)
     for a in env.actions():
         print(a)
-    V = {}
-    for state in env.states():
-        V[state] = np.random.randn()
-    env.render_v(V)
+    # V = {}
+    # for state in env.states():
+    #     V[state] = np.random.randn()
+    # env.render_v(V)
+    print("-"*50)
+    pi = defaultdict(lambda: {0: 0.25, 1: 0.25, 2: 0.25, 3: 0.25})
+    state = (0, 1)
+    print(pi[state])
+    print(pi)
