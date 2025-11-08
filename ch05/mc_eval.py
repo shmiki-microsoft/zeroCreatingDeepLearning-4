@@ -33,3 +33,23 @@ class RandomAgent:
             G = self.gamma * G + reward
             self.cnts[state] += 1
             self.V[state] += (G - self.V[state]) / self.cnts[state]
+
+env = GridWorld()
+agent = RandomAgent()
+
+episodes = 1000
+for episode in range(episodes):
+    state = env.reset()
+    agent.reset()
+
+    while True:
+        action = agent.get_action(state)
+        next_state, reward, done = env.step(action)
+
+        agent.add(state, action, reward)
+        if done:
+            agent.eval()
+            break
+
+        state = next_state
+env.render_v(agent.V)
