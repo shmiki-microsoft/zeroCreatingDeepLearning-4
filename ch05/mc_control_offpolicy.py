@@ -22,3 +22,19 @@ class McOffPolicyAgent:
         probs = list(action_probs.values())
         return np.random.choice(actions, p=probs)
 
+    def add(self, state, action, reward):
+        data = (state, action, reward)
+        self.memory.append(data)
+
+    def reset(self):
+        self.memory.clear()
+
+    def update(self):
+        G = 0
+        rho = 1
+
+        for data in reversed(self.memory):
+            state, action, reward = data
+            key = (state, action)
+
+            G = self.gamma * rho * G + reward
