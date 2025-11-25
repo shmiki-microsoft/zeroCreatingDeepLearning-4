@@ -18,4 +18,25 @@ class TdAgent:
         probs = list(action_probs.values())
         return np.random.choice(actions, p=probs)
 
-    
+    def eval(self, state, reward, next_state, done):
+        next_V = 0 if done else self.V[next_state]
+        target = reward + self.gamma * next_V
+        self.V[state] += (target - self.V[state]) * self.alpha
+
+env = GridWorld()
+agent = TdAgent()
+
+episodes = 1000
+for episode in range(episodes):
+    state = env.reset()
+
+    while True:
+        action = agent.get_action(state)
+        next_state, reward, done = env.step(action)
+
+        agent.eval(state, reward, next_state, done)
+        if done:
+            break
+        state = next_state
+
+env.render_v(agent.V)
