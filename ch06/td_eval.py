@@ -12,4 +12,10 @@ class TdAgent:
         self.pi = defaultdict(lambda: random_actions)
         self.V = defaultdict(lambda: 0)
 
+    def get_action(self, state):
+        action_probs = self.pi[state]
+        actions = list(action_probs.keys())
+        probs = list(action_probs.values())
+        return np.random.choice(actions, p=probs)
+
     
