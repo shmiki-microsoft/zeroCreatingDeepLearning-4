@@ -18,7 +18,7 @@ class McOffPolicyAgent:
 
     def get_action(self, state):
         action_probs = self.b[state]
-        actions = list(action_probs.key())
+        actions = list(action_probs.keys())
         probs = list(action_probs.values())
         return np.random.choice(actions, p=probs)
 
