@@ -27,8 +27,10 @@ class QLearningAgent:
         else:
             next_qs = [self.Q[next_state, a] for a in range(self.action_size)]
             next_q_max = max(next_qs)
+
         target = reward + self.gamma * next_q_max
         self.Q[state, action] += (target - self.Q[state, action]) * self.alpha
+
         self.pi[state] = greedy_probs(self.Q, state, epsilon=0)
         self.b[state] = greedy_probs(self.Q, state, self.epsilon)
 
