@@ -25,7 +25,8 @@ class TwoLayerNet(Model):
         return y
 
 model = TwoLayerNet(10, 1)
-optimizer = optimizers.SGD(lr)
+# optimizer = optimizers.SGD(lr)
+optimizer = optimizers.Adam(lr)
 optimizer.setup(model)
 
 for i in range(iters):
