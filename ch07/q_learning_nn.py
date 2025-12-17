@@ -37,3 +37,27 @@ class QLearningAgent:
         self.optimizer.setup(self.qnet)
 
     def get_action(self, state_vec):
+        if np.random.rand() < self.epsilon:
+            return np.random.choice(self.action_size)
+        else:
+            qs = self.qnet(state_vec)
+            return qs.data.argmax()
+
+    def update(self, state, action, reward, next_state, done):
+        if done:
+            next_q = np.zeros(1)
+        else:
+            next_qs = self.qnet(next_state)
+            next_q = next_qs.max(axis=1)
+            next_q.unchain()
+
+        target = self.gamma * next_q + reward
+        qs = self.qnet(state)
+        q = qs[:, action]
+        loss = F.mean_squared_error(target, q)
+
+        self.qnet.cleargrads()
+        loss.backward()
+        self.optimizer.update()
+
+        return loss.data
