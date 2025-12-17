@@ -25,3 +25,15 @@ class QNet(Model):
         x = self.l2(x)
         return x
 
+class QLearningAgent:
+    def __init__(self):
+        self.gamma = 0.9
+        self.lr = 0.01
+        self.epsilon = 0.1
+        self.action_size = 4
+
+        self.qnet = QNet()
+        self.optimizer = optimizers.SGD(self.lr)
+        self.optimizer.setup(self.qnet)
+
+    def get_action(self, state_vec):
