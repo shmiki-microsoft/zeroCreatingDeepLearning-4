@@ -71,7 +71,32 @@ loss_history = []
 for episode in range(episodes):
     state = env.reset()
     state = one_hot(state)
+    total_loss, cnt = 0, 0
     done = False
+
     while not done:
         action = agent.get_action(state)
-        
+        next_state, reward, done = env.step(action)
+        next_state = one_hot(next_state)
+
+        loss = agent.update(state, action, reward, next_state, done)
+        total_loss += loss
+        cnt += 1
+        state = next_state
+
+    avg_loss = total_loss / cnt
+    loss_history.append(avg_loss)
+
+plt.xlabel('episode')
+plt.ylabel('loss')
+plt.plot(range(len(loss_history)), loss_history)
+plt.show()
+
+# visualize
+Q = {}
+for state in env.states():
+    for action in env.action_space:
+        q = agent.qnet(one_hot(state))[:, action]
+        Q[state, action] = float(q.data)
+env.render_q(Q)
+
