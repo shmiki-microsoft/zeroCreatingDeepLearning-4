@@ -61,3 +61,17 @@ class QLearningAgent:
         self.optimizer.update()
 
         return loss.data
+
+env = GridWorld()
+agent = QLearningAgent()
+
+episodes = 1000
+loss_history = []
+
+for episode in range(episodes):
+    state = env.reset()
+    state = one_hot(state)
+    done = False
+    while not done:
+        action = agent.get_action(state)
+        
