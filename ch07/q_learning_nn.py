@@ -1,3 +1,9 @@
+'''
+ch07.q_learning_nn の Docstring
+.venv/Lib/dezero の datasets.py と transforms.py にて np.int を int に変更する必要あり
+'''
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 from dezero import Model
