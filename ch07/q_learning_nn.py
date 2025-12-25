@@ -103,8 +103,5 @@ Q = {}
 for state in env.states():
     for action in env.action_space:
         q = agent.qnet(one_hot(state))[:, action]
-        print("q:", q)
-        print("q.data:", q.data)
-        print("q.data.shape:", q.data.shape)
         Q[state, action] = float(q.data.item())
 env.render_q(Q)
