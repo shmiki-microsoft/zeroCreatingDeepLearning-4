@@ -91,7 +91,10 @@ class DQNAgent:
 
 episodes = 300
 sync_interval = 20
-env = gym.make('CartPole-v1', render_mode="human")
+#ゲーム画面描画あり
+# env = gym.make('CartPole-v1', render_mode="human")
+#ゲーム画面描画なし
+env = gym.make('CartPole-v1')
 agent = DQNAgent()
 reward_history = []
 
