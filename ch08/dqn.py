@@ -42,3 +42,35 @@ class QNet(Model):
         x = self.l2(x)
         return x
 
+class DQNAgent:
+    def __init__(self):
+        self.gamma = 0.98
+        self.lr = 0.0005
+        self.epsilon = 0.1
+        self.buffer_size = 10000
+        self.batch_size = 32
+        self.action_size = 4
+
+        self.replay_buffer = ReplayBuffer(self.buffer_size, self.batch_size)
+        self.qnet = QNet(self.action_size)
+        self.target_qnet = copy.deepcopy(self.qnet)
+        self.optimizer = optimizers.Adam(self.lr).setup(self.qnet)
+        self.optimizer.setup(self.qnet)
+
+    def get_action(self, state):
+        if np.random.rand() < self.epsilon:
+            return np.random.randint(self.action_size)
+        else:
+            state = state[np.newaxis, :]
+            qs = self.qnet(state)
+            return qs.data.argmax()
+
+    def update(self, state, action, reward, next_state, done):
+        self.replay_buffer.add(state, action, reward, next_state, done)
+        if len(self.replay_buffer) < self.batch_size:
+            return
+
+        state, action, reward, next_state, done = self.replay_buffer.get_batch()
+        qs = self.qnet(state)
+        q = qs[np.arange(self.batch_size), action]
+
