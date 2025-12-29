@@ -89,7 +89,7 @@ class DQNAgent:
     def sync_qnet(self):
         self.target_qnet = copy.deepcopy(self.qnet)
 
-episodes = 300
+episodes = 200
 sync_interval = 20
 #ゲーム画面描画あり
 # env = gym.make('CartPole-v1', render_mode="human")
