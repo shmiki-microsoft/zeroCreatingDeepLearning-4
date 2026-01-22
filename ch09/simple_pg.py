@@ -34,20 +34,69 @@ class Agent:
         action = np.random.choice(len(probs), p=probs.data)
         return action, probs[action]
 
+    def add(self, reward, prob):
+        data = (reward, prob)
+        self.memory.append(data)
 
-if __name__ == "__main__":
-    env = gym.make('CartPole-v1', render_mode='human')
-    observation, info = env.reset()
+    def update(self):
+        self.pi.cleargrads()
+
+        G, loss = 0,0
+        for reward, prob in reversed(self.memory):
+            G = reward + self.gamma * G
+
+        for reward, prob in self.memory:
+            loss += -F.log(prob) * G
+
+        loss.backward()
+        self.optimizer.update()
+        self.memory = []
+
+episodes = 3000
+#ゲーム画面描画あり
+# env = gym.make('CartPole-v1', render_mode="human")
+#ゲーム画面描画なし
+env = gym.make('CartPole-v1')
+
+agent = Agent()
+reward_history = []
+
+for episode in range(episodes):
+    state, info = env.reset()
     done = False
-    agent = Agent()
+    total_reward = 0
+    while not done:
+        action, prob = agent.get_action(state)
+        next_state, reward, terminated, truncated, info = env.step(action)
+        done = terminated or truncated
 
-    action, prob = agent.get_action(observation)
-    print("Selected action:", action)
-    print("Action probability:", prob)
+        agent.add(reward, prob)
+        state = next_state
+        total_reward += reward
 
-    G = 100.0
-    J = G * F.log(prob)
-    print("Computed J value:", J)
-    J.backward()
-    print("Computed J backward:", J.grad)
-    
+    agent.update()
+
+    reward_history.append(total_reward)
+    if episode % 100 == 0:
+        print(f"episode :{episode}, total reward : {total_reward:.1f}")
+env.close()
+
+# === Play CartPole ===
+env = gym.make('CartPole-v1', render_mode="human")
+state, info = env.reset()
+done = False
+total_reward = 0
+
+while not done:
+    action = agent.get_action(state)
+    next_state, reward, terminated, truncated, info = env.step(action)
+    done = terminated or truncated
+    state = next_state
+    total_reward += reward
+env.close()
+
+print('Total Reward:', total_reward)
+
+# plot
+from common.utils import plot_total_reward
+plot_total_reward(reward_history)
