@@ -88,7 +88,7 @@ done = False
 total_reward = 0
 
 while not done:
-    action = agent.get_action(state)
+    action, prob = agent.get_action(state)
     next_state, reward, terminated, truncated, info = env.step(action)
     done = terminated or truncated
     state = next_state
